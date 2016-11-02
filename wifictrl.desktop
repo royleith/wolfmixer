@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=WiFiCtrl
+Name[en_GB]=WiFiCtrl
+GenericName=WiFiControl
+Exec=python /home/pi/Programs/wifictrl.py
+Icon=/usr/share/icons/Adwaita/scalable/devices/network-wireless-symbolic.svg
+Terminal=false
+Type=Application
+Categories=GTK;Utility
