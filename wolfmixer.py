@@ -1,5 +1,7 @@
-#  WolfMixer V0.6
-#  Copyright (C) 2015 Roy Leith
+#  WolfMixer V0.7
+#  Copyright (C) 2015, 2016 Roy Leith
+#
+#  Updated for driver overlay rpi-cirrus-wm5102.dtbo.
 #
 #
 #  This program is distributed under the terms of the GNU General Public License V3
@@ -228,7 +230,7 @@ def SpeakerHP():
   
                       
 def SPDIFoutSW():
-    name = "SPDIF out Switch' "
+    name = "SPDIF Out Switch' "
     if SPDIFoutSWvar.get() == 1:
         os.system(amixer + name + "on")
     if SPDIFoutSWvar.get() == 0:
@@ -236,7 +238,7 @@ def SPDIFoutSW():
 #    switchrep()
 
 def SPDIFinSW():
-    name = "SPDIF in Switch' "
+    name = "SPDIF In Switch' "
     if SPDIFinSWvar.get() == 1:
         os.system(amixer + name + "on")
     if SPDIFinSWvar.get() == 0:
@@ -299,7 +301,7 @@ def txsource(val):
         os.system(amixer + "Tx Source' " + "S/PDIF RX")
 
 def switchrep():
-    name = ['HPOUT2 Digital Switch', 'SPDIF out Switch', 'HPOUT1 Digital Switch', 'Speaker Digital Switch', 'Speaker High Performance Switch', 'SPDIF in Switch', 'DMIC Switch', 'IN2 High Performance Switch', 'Headset Mic Switch', 'IN1 High Performance Switch', 'Line Input Switch', 'IN3 High Performance Switch']
+    name = ['HPOUT2 Digital Switch', 'SPDIF Out Switch', 'HPOUT1 Digital Switch', 'Speaker Digital Switch', 'Speaker High Performance Switch', 'SPDIF In Switch', 'DMIC Switch', 'IN2 High Performance Switch', 'Headset Mic Switch', 'IN1 High Performance Switch', 'Line Input Switch', 'IN3 High Performance Switch']
     for switch in name:
         print switch, " = ", statusquosw(switch)
     print "." * 15
@@ -454,7 +456,7 @@ SPDIF_opt_menu = Pmw.OptionMenu(SPDIF,
     command= SPDIF_port,)
 SPDIF_opt_menu.place(relx=menux, rely=menuy)
 
-SPDIFoutnamesw = 'SPDIF out Switch'
+SPDIFoutnamesw = 'SPDIF Out Switch'
 swvalue = statusquosw(SPDIFoutnamesw)
 
 SPDIFoutSWvar = IntVar() 
@@ -604,7 +606,7 @@ Inputs.pack(side=TOP, pady=0, padx=0)
 Master = Frame(Inputs, width=chanwidth, height=160, relief=FLAT, borderwidth=1)
 Master.pack(side=LEFT, pady=0, padx=0)
                           
-SPDIFinnamesw = 'SPDIF in Switch'
+SPDIFinnamesw = 'SPDIF In Switch'
 swvalue = statusquosw(SPDIFinnamesw)
 
 SPDIFinSWvar = IntVar()  
