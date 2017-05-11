@@ -1,7 +1,5 @@
-#  WolfMixer V0.7
-#  Copyright (C) 2015, 2016 Roy Leith
-#
-#  Updated for driver overlay rpi-cirrus-wm5102.dtbo.
+#  WolfMixer V0.8
+#  Copyright (C) 2015, 2016, 2017 Roy Leith
 #
 #
 #  This program is distributed under the terms of the GNU General Public License V3
@@ -16,16 +14,16 @@ import Pmw, subprocess, os
 
 
 root = Tk()
-root.title('WolfMixer')
+root.title('WolfMixer V0.8')
 root.option_add('*font', ('verdana', 10, 'bold'))
 
 # Pmw.initialise()
 playbackports = {'AIF':'AIF', 'SPDIF':'S/PDIF RX'}
 playbackportsID = {'1': 'PLAY', '0':'SPDIF'}
 InputPorts = {'None':'None', 'PLAY':'AIF1RX', 'Mic':'IN1', 'DMICs':'IN2', 'Line':'IN3', 'SPDIF':'AIF2RX', '1kHz':"'Tone Generator", 'Noise':"'Noise Generator'"}
-InputPortsID = {'0':'None', '15':'PLAY', '8':'Mic', '9':'DMICs', '11':'Line', '23':'SPDIF', '1':'1kHz', '6':'Noise', '43':'LHPF'}
+InputPortsID = {'0':'None', '16':'PLAY', '9':'Mic', '10':'DMICs', '12':'Line', '24':'SPDIF', '1':'1kHz', '7':'Noise', '48':'LHPF'}
 
-amixer = "amixer -q -Dhw:sndrpiwsp cset name='"
+amixer = "amixer -q -Dhw:RPiCirrus cset name='"
 
 # Set IN1, IN2 and IN3 input volumes to optimum (31) and 
 for defaultvol in ["IN1L Volume' ", "IN1R Volume' ", "IN2L Volume' ", "IN2R Volume' ", "IN3L Volume' ", "IN3R Volume' "]:
@@ -94,10 +92,14 @@ def lineout2_print_vol(val):
     os.system(amixer + name + val)
     
 def lineout_port(val):
+    os.system(amixer + "HPOUT2 Digital Switch' " + "off,off")
     inport = InputPorts[val]
     outport = "HPOUT2"
     patch(outport, inport)
-        
+    os.system(amixer + "HPOUT2 Digital Switch' " + "on,on")
+    swlinevalue = statusquosw("HPOUT2 Digital Switch")
+    lineoutSWvar.set(swlinevalue)
+
 def SPDIF_print_vol(val):
     name = "AIF2TX1 Input 1 Volume' "
     os.system(amixer + name + val)
@@ -120,9 +122,13 @@ def Headset2_print_vol(val):
     os.system(amixer + name + val)
     
 def Headset_port(val):
+    os.system(amixer + "HPOUT1 Digital Switch' " + "off,off")
     inport = InputPorts[val]
     outport = "HPOUT1"
     patch(outport, inport)
+    os.system(amixer + "HPOUT1 Digital Switch' " + "on,on")
+    swHSvalue = statusquosw("HPOUT1 Digital Switch")
+    HeadsetSWvar.set(swHSvalue)
 
 def Speaker_print_vol(val):
     name = "Speaker Digital Volume' "
@@ -135,9 +141,13 @@ def Speaker2_print_vol(val):
     os.system(amixer + name + val)
     
 def Speaker_port(val):
+    os.system(amixer + "Speaker Digital Switch' " + "off,off")
     inport = InputPorts[val]
     outport = "SPKOUT"
     patch(outport, inport)
+    os.system(amixer + "Speaker Digital Switch' " + "on,on")
+    swSpkvalue = statusquosw("Speaker Digital Switch")
+    SpeakerSWvar.set(swSpkvalue)
 
 def RECORD_print_vol(val):
     name = "AIF1TX1 Input 1 Volume' "
@@ -212,12 +222,10 @@ def Speakersw():
 
 def Headsetsw():
     name = "HPOUT1 Digital Switch' "
-    if HeadsetSWvar.get() == 0:
+    if HeadsetSWvar.get() == 0:		
         os.system(amixer + name + "on,on")
-        print amixer + name + "on,on"
     if HeadsetSWvar.get() == 1:
         os.system(amixer + name + "off,off")
-        print amixer + name + "on,on"
 #    switchrep()        
         
 def SpeakerHP():
@@ -228,17 +236,10 @@ def SpeakerHP():
         os.system(amixer + name + "off")
 #    switchrep()
   
-                      
-def SPDIFoutSW():
-    name = "SPDIF Out Switch' "
-    if SPDIFoutSWvar.get() == 1:
-        os.system(amixer + name + "on")
-    if SPDIFoutSWvar.get() == 0:
-        os.system(amixer + name + "off")
-#    switchrep()
+
 
 def SPDIFinSW():
-    name = "SPDIF In Switch' "
+    name = "SPDIF in Switch' "
     if SPDIFinSWvar.get() == 1:
         os.system(amixer + name + "on")
     if SPDIFinSWvar.get() == 0:
@@ -254,13 +255,7 @@ def lineinHP():
         os.system(amixer + name + "off")
 #    switchrep()
 
-def lineinmuteSW():
-    name = "Line Input Switch' "
-    if lineinmuteSWvar.get() == 0:
-        os.system(amixer + name + "on")
-    if lineinmuteSWvar.get() == 1:
-        os.system(amixer + name + "off")
-#    switchrep()
+
 
 def DMICHPSW():
     name = "IN2 High Performance Switch' "
@@ -270,13 +265,7 @@ def DMICHPSW():
         os.system(amixer + name + "off")
 #    switchrep()
     
-def DMICmuteSW():
-    name = "DMIC Switch' "
-    if DMICmuteSWvar.get() == 0:
-        os.system(amixer + name + "on")
-    if DMICmuteSWvar.get() == 1:
-        os.system(amixer + name + "off")
-#    switchrep()
+
 
 def HeadsetHP():
     name = "IN1 High Performance Switch' "
@@ -286,13 +275,7 @@ def HeadsetHP():
         os.system(amixer + name + "off")
 #    switchrep()
     
-def Headsetmute():
-    name = "Headset Mic Switch' "
-    if hsmicmuteSWvar.get() == 0:
-        os.system(amixer + name + "on")
-    if hsmicmuteSWvar.get() == 1:
-        os.system(amixer + name + "off")
-#    switchrep()  
+
     
 def txsource(val):
     if val == 'PLAY':
@@ -301,15 +284,14 @@ def txsource(val):
         os.system(amixer + "Tx Source' " + "S/PDIF RX")
 
 def switchrep():
-    name = ['HPOUT2 Digital Switch', 'SPDIF Out Switch', 'HPOUT1 Digital Switch', 'Speaker Digital Switch', 'Speaker High Performance Switch', 'SPDIF In Switch', 'DMIC Switch', 'IN2 High Performance Switch', 'Headset Mic Switch', 'IN1 High Performance Switch', 'Line Input Switch', 'IN3 High Performance Switch']
+    name = ['HPOUT2 Digital Switch', 'HPOUT1 Digital Switch', 'Speaker Digital Switch', 'Speaker High Performance Switch', 'IN2 High Performance Switch', 'IN1 High Performance Switch', 'IN3 High Performance Switch']
     for switch in name:
         print switch, " = ", statusquosw(switch)
-    print "." * 15
+#    print "." * 15
     
-# removed switches   , 'SPDIF in Switch', 'IN2 High Performance Switch', 'DMIC Switch', 'IN1 High Performance Switch', 'Headset Mic Switch','IN3 High Performance Switch' , 'Line Input Switch'
 
 def statusquo(name):
-    result = subprocess.check_output("amixer -Dhw:sndrpiwsp cget name='" + name + "'", shell=True)
+    result = subprocess.check_output("amixer -Dhw:RPiCirrus cget name='" + name + "'", shell=True)
     lines = result.split("\n")  
     maxvalue = "null"
     minvalue = "null"
@@ -333,7 +315,7 @@ def statusquo(name):
 def statusquosw(name):
     Rvalue = "null"
     para = "Null"
-    result = subprocess.check_output("amixer -Dhw:sndrpiwsp cget name='" + name + "'", shell=True)
+    result = subprocess.check_output("amixer -Dhw:RPiCirrus cget name='" + name + "'", shell=True)
     lines = result.split("\n")  
     for line in lines:
         if (line.find(",values=") > 0):
@@ -345,19 +327,19 @@ def statusquosw(name):
         if line.find(": values")>0:
             if (para == 1):        
                 if (line[(line.find("=") + 1):]) == "on":
-                    Rvalue = 1
-                if (line[(line.find("=") + 1):]) == "off":
                     Rvalue = 0
+                if (line[(line.find("=") + 1):]) == "off":
+                    Rvalue = 1
             if (para == 2):
                 if (line[(line.find(",") + 1):]) == "on":
-                    Rvalue = 1
+                    Rvalue = 0
                 if (line[(line.find(",") + 1):]) == "off":
-                    Rvalue = 0 
+                    Rvalue = 1 
     return  Rvalue
     
                                        
 def statusquopatch(name):
-    result = subprocess.check_output("amixer -Dhw:sndrpiwsp cget name='" + name + "'", shell=True)
+    result = subprocess.check_output("amixer -Dhw:RPiCirrus cget name='" + name + "'", shell=True)
     lines = result.split("\n")  
     Rvalue = "null"
     para = "Null"
@@ -370,7 +352,7 @@ def statusquopatch(name):
     return Rvalue
 
 def statusquoplay(name):
-    result = subprocess.check_output("amixer -Dhw:sndrpiwsp cget name='" + name + "'", shell=True)
+    result = subprocess.check_output("amixer -Dhw:RPiCirrus cget name='" + name + "'", shell=True)
     lines = result.split("\n")  
     Rvalue = "null"
     para = "Null"
@@ -406,12 +388,6 @@ lineoutvolvar.set(Rvalue)
 lineoutvol = Scale(lineout, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=10,
     variable=lineoutvolvar, command= lineout_print_vol,).place(relx=0.00, rely=0.08)
 
-# linename2 = 'HPOUT2L Input 1 Volume'
-# maxvalue, minvalue, Rvalue = statusquo(linename2)
-# lineoutvol2var = IntVar()       
-# lineoutvol2var.set(Rvalue)
-# lineoutvol2 = Scale(lineout, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=5, sliderlength=10,
-#     variable=lineoutvol2var, command= lineout2_print_vol,).place(relx=0.40, rely=0.08)
 
 # Patcher
 patchname = 'HPOUT2L Input 1'
@@ -426,6 +402,7 @@ lineout_opt_menu.place(relx=menux, rely=menuy)
 
 lineoutnamesw = 'HPOUT2 Digital Switch'
 swvalue = statusquosw(lineoutnamesw)
+# print "Lineout =", swvalue
 
 lineoutSWvar = IntVar()
 lineoutSWvar.set(swvalue)
@@ -451,18 +428,11 @@ SPDIFvar = StringVar()
 SPDIFvar.set(statusquopatch(patchname))
 SPDIF_opt_menu = Pmw.OptionMenu(SPDIF, 
     menubutton_textvariable = SPDIFvar,
-    items=('None', 'PLAY', 'Mic', 'DMICs', 'Line', 'SPDIF', '1kHz', 'Noise'),
+    items=('None', 'PLAY', 'Mic', 'DMICs', 'Line', '1kHz', 'Noise'),
     menubutton_width=4,
     command= SPDIF_port,)
 SPDIF_opt_menu.place(relx=menux, rely=menuy)
 
-SPDIFoutnamesw = 'SPDIF Out Switch'
-swvalue = statusquosw(SPDIFoutnamesw)
-
-SPDIFoutSWvar = IntVar() 
-SPDIFoutSWvar.set(swvalue)
-SPDIFoutSW = Checkbutton(SPDIF, text="On",
-                          variable=SPDIFoutSWvar, command=SPDIFoutSW,).place(relx=0.15, rely=SWy)
 
 # Headset channel strip
 
@@ -479,12 +449,6 @@ Headsetvolvar.set(Rvalue)
 Headsetvol = Scale(Headset, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=10,
     variable=Headsetvolvar, command= Headset_print_vol,).place(relx=0.00, rely=0.08)
 
-# HSname2 = 'HPOUT1L Input 1 Volume'
-# maxvalue, minvalue, Rvalue = statusquo(HSname2)
-# Headsetvol2var = IntVar()       
-# Headsetvol2var.set(Rvalue)            
-# Headsetvol2 = Scale(Headset, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=5, sliderlength=10,
-#     variable=Headsetvol2var, command= Headset2_print_vol,).place(relx=0.40, rely=0.08)
 
 # Patcher
 patchname = 'HPOUT1L Input 1'
@@ -499,7 +463,7 @@ Headset_opt_menu.place(relx=menux, rely=menuy)
 
 Hsoutnamesw = 'HPOUT1 Digital Switch'
 swvalue = statusquosw(Hsoutnamesw)
-    
+# print "Headset =", swvalue   
 HeadsetSWvar = IntVar()
 HeadsetSWvar.set(swvalue)
 HeadsetSW = Checkbutton(Headset, text="Mute",
@@ -518,12 +482,6 @@ Speakervolvar.set(Rvalue)
 Speakervol = Scale(Speaker, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=10,
     variable=Speakervolvar, command= Speaker_print_vol,).place(relx=0.00, rely=0.08)
 
-# Spkname2 = 'SPKOUTL Input 1 Volume'
-# maxvalue, minvalue, Rvalue = statusquo(Spkname2)
-# Speakervol2var = IntVar()       
-# Speakervol2var.set(Rvalue)            
-# Speakervol2 = Scale(Speaker, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=5, sliderlength=10,
-#     variable=Speakervol2var, command= Speaker2_print_vol,).place(relx=0.40, rely=0.08)
 
 # Patcher
 patchname = 'SPKOUTL Input 1'
@@ -538,7 +496,7 @@ Speaker_opt_menu.place(relx=menux, rely=menuy)
 
 Spknamesw = 'Speaker Digital Switch'
 swvalue = statusquosw(Spknamesw)
-    
+# print "Speaker =", swvalue   
 SpeakerSWvar = IntVar()
 SpeakerSWvar.set(swvalue)
 SpeakerSW = Checkbutton(Speaker, text="Mute",
@@ -605,14 +563,6 @@ Inputs.pack(side=TOP, pady=0, padx=0)
 
 Master = Frame(Inputs, width=chanwidth, height=160, relief=FLAT, borderwidth=1)
 Master.pack(side=LEFT, pady=0, padx=0)
-                          
-SPDIFinnamesw = 'SPDIF In Switch'
-swvalue = statusquosw(SPDIFinnamesw)
-
-SPDIFinSWvar = IntVar()  
-SPDIFinSWvar.set(Rvalue)
-SPDIFinSW = Checkbutton(Master, text="SPDIFin",
-                          variable=SPDIFinSWvar, command=SPDIFinSW,).pack(side=TOP, pady=15, padx=0)
 
 Label(Master, text='TX Source').pack(side=TOP, pady=2, padx=0)
 
@@ -641,12 +591,6 @@ DMICvar.set(Rvalue)
 DMIC = Scale(inner, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=10,
     variable=DMICvar, command= DMIC_print_vol,).place(relx=0.00, rely=0.1)
 
-# name2 = 'IN2L Volume'
-# maxvalue, minvalue, Rvalue = statusquo(name2)
-# DMIC2var = IntVar()       
-# DMIC2var.set(Rvalue)
-# DMIC2 = Scale(inner, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=5, sliderlength=10,
-#     variable=DMIC2var, command= DMIC2_print_vol,).place(relx=0.40, rely=0.1)
 
 DMICnamesw = 'IN2 High Performance Switch'
 swvalue = statusquosw(DMICnamesw)
@@ -655,16 +599,7 @@ DMICHPSWvar = IntVar()
 DMICHPSWvar.set(swvalue)
 DMICHPSW = Checkbutton(inner, text="HQ",
                           variable=DMICHPSWvar, command=DMICHPSW,).place(relx=irSW, rely=iSWy)
-# 'DMIC Switch'   (Mute)
-
-DMICmutenamesw = 'DMIC Switch'
-swvalue = statusquosw(DMICmutenamesw)
-
-DMICmuteSWvar = IntVar()
-DMICmuteSWvar.set(swvalue)
-DMICmuteSW = Checkbutton(inner, text="Mute",
-                          variable=DMICmuteSWvar, command=DMICmuteSW,).place(relx=ilSW, rely=iSWy2)
-                          
+                         
 # Headset In
 
 Headsetin = Frame(Inputs, width=chanwidth, height=ichany, relief=RAISED, borderwidth=1)
@@ -678,12 +613,6 @@ Headsetinvolvar.set(Rvalue)
 Headsetinvol = Scale(Headsetin, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=10,
     variable=Headsetinvolvar, command= Headsetin_print_vol,).place(relx=0.00, rely=0.1)
 
-# name = 'IN1L Volume'
-# maxvalue, minvalue, Rvalue = statusquo(name)
-# Headsetin2volvar = IntVar()       
-# Headsetin2volvar.set(Rvalue)
-# Headsetin2vol = Scale(Headsetin, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=5, sliderlength=10,
-#     variable=Headsetin2volvar, command= Headsetin2_print_vol,).place(relx=0.40, rely=0.1)
 
 Hsinnamesw = 'IN1 High Performance Switch'
 swvalue = statusquosw(Hsinnamesw)
@@ -692,17 +621,7 @@ HeadsetHPSWvar = IntVar()
 HeadsetHPSWvar.set(swvalue)
 HeadsetHPSW = Checkbutton(Headsetin, text="HQ",
                           variable=HeadsetHPSWvar, command=HeadsetHP,).place(relx=irSW, rely=iSWy)
-
-# 'Headset Mic Switch'  (Mute)
-
-hsmicmutenamesw = 'Headset Mic Switch'
-swvalue = statusquosw(hsmicmutenamesw)
-
-hsmicmuteSWvar = IntVar()
-hsmicmuteSWvar.set(swvalue)
-hsmicmuteSW = Checkbutton(Headsetin, text="Mute",
-                          variable=hsmicmuteSWvar, command=Headsetmute,).place(relx=ilSW, rely=iSWy2)
-                          
+                     
                           
 #Line In
 linein = Frame(Inputs, width=chanwidth, height=ichany, relief=RAISED, borderwidth=1)
@@ -716,12 +635,6 @@ lineinvolvar.set(Rvalue)
 lineinvol = Scale(linein, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=10,
     variable=lineinvolvar, command= linein_print_vol,).place(relx=0.00, rely=0.1)
 
-# name = 'IN3L Volume'
-# maxvalue, minvalue, Rvalue = statusquo(name)
-# linein2volvar = IntVar()       
-# linein2volvar.set(Rvalue)
-# linein2vol = Scale(linein, from_=maxvalue, to=minvalue, orient=VERTICAL, length=170, width=5, sliderlength=10,
-#     variable=linein2volvar, command= linein2_print_vol,).place(relx=0.40, rely=0.1)
 
 lineinnamesw = 'IN3 High Performance Switch'
 swvalue = statusquosw(lineinnamesw)
@@ -731,15 +644,6 @@ lineinHPvar.set(swvalue)
 lineinHPSW = Checkbutton(linein, text="HQ",
                           variable=lineinHPvar, command=lineinHP,).place(relx=irSW, rely=iSWy)
 
-#'Line Input Switch'  (Mute)
-
-lineinmutenamesw = 'Line Input Switch'
-swvalue = statusquosw(lineinmutenamesw)
-
-lineinmuteSWvar = IntVar()
-lineinmuteSWvar.set(swvalue)
-lineinmuteSW = Checkbutton(linein, text="Mute",
-                          variable=lineinmuteSWvar, command=lineinmuteSW,).place(relx=ilSW, rely=iSWy2)
 
 # Noise
 Noise = Frame(Inputs, width=chanwidth, height=ichany, relief=RAISED, borderwidth=1)

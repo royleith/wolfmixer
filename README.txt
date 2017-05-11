@@ -1,6 +1,6 @@
-                               WolfMixer V0.7
-                                 30/10/2016
-Copyright (C) 2015, 2016 Roy Leith
+                               WolfMixer V0.8
+                                 11/05/2017
+Copyright (C) 2015, 2016, 2017 Roy Leith
 
 
 This program is distributed under the terms of the 
@@ -21,6 +21,18 @@ My first mixer was based on this image and showed that the 'minor' input
 volume controls were best set to maximum for lowest noise 
 (the default setting in the image) and the 'minor' output volumes to 
 '32' (which is around 0dB giving a modest amount of headroom).
+
+WOLFMIXER v0.8
+
+Wolfmixer v0.8 updates the control names and IDs used by
+Matthias "Hias" Reichl's updated driver 
+
+http://www.horus.com/~hias/cirrus-driver.html
+
+in the driver tree of kernel 4.9 and later. It uses Hias' procedure of muting 
+output ports during re-patching input ports and then unmuting. The SPDIF IN
+and SPDIF OUT switches have been removed as the driver manages routing, itself.
+
 
 WOLFMIXER v0.7
 
@@ -67,12 +79,6 @@ it with the icon name and not the file name of wolfmixer.desktop)
 
 * this README.txt file.
 
-For use with the Raspberry Pi3 B there is also,
-
-* wifictrl.py
-
-* WiFiCTRL (actual filename: wifictrl.desktop)
-
 SETTING UP
 
 Some of the files need to be copied into protected 'System' folders.
@@ -114,33 +120,33 @@ file to /usr/share/raspi-ui-overrides.
 
 Copy WolfMixer.png to /usr/share/icons/Adwaita/scalable/devices.
 
-ADDITIONAL OPTION FOR RASPBERRY PI 3 B
-
-The Raspberry Pi 3 BlueTooth service should not be used at the same
-time as WiFi as it results in breaks in sound. WiFiCTRL is a Python
-Utility to turn WiFi off and on.
-
-Copy WiFiCTRL to /usr/share/raspi-ui-overrides
 
 MENU ITEMS
 
 It is convenient to have the program(s) in the Application Menu and
 as Application Launcher icons in Panel. Once the files are in the 
 correct folders, restart the Raspi. Running Preferences/Main Menu Editor
-Should make the program(s) appear under the 'Accessories' category.
+Should make the program appear under the 'Accessories' category.
 
-Make sure that the entries are ticked. Also tick Logout in the Other 
+Make sure that the entry is ticked. Also tick Logout in the Other 
 category. Doing this does not guarantee that they appear in the menu!
 Sometimes moving them to the top of the list in the menu editor will 
 do the trick. Sometimes a restart will do it. It is flakey! You 
 might also try copying the desktop files into /usr/share/applications.
+As a final suggestion, try renaming
+ 
+lxde-pi-applications.menu in /home/pi/.config/menus/ to 
+lxde-pi-applications.menu.old
+and reboot.
 
 I add an Application Launcher at the right-hand end of the Panel and
 add Logout to it. Then I put another AL next to the Loudspeaker icon
-and add WolfMixer to it. Finally, I put an AL next to the BlueTooth
-icon for the WiFiCTRL program.
+and add WolfMixer to it.
 
 IN USE
+
+To use the Wolfson or Cirrus audio card in Raspbian, right-click on 
+the loudspeaker icon in the System Tray and select RPi-Cirrus.
 
 On startup, WolfMixer collects the settings that it finds in alsamixer 
 and adjusts its controls to those settings. If you have not made any 
@@ -172,4 +178,4 @@ output port. The Raspberry Pi playback volume cannot be adjusted by
 WolfMixer or alsamixer. Use the panel app. You may find erroneous 'Mute'
  indications in the app, but it does not seem to affect playback.
 
-README.txt, Version3, 30/10/2016
+README.txt, Version4, 11/05/2017
