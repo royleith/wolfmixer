@@ -118,7 +118,10 @@ As with all desktop files, it appears in the file manager as 'WolfMixer'
 although you won't see the correct icon at this stage. Copy this 
 file to /usr/share/raspi-ui-overrides.
 
-Copy WolfMixer.png to /usr/share/icons/Adwaita/scalable/devices.
+Copy WolfMixer.png to 
+/usr/share/icons/Adwaita/scalable/devices
+/usr/share/applications
+/home/pi/.local/share/applications
 
 
 MENU ITEMS
@@ -126,13 +129,12 @@ MENU ITEMS
 It is convenient to have the program(s) in the Application Menu and
 as Application Launcher icons in Panel. Once the files are in the 
 correct folders, restart the Raspi. Running Preferences/Main Menu Editor
-Should make the program appear under the 'Accessories' category.
+Should make the program appear under the 'Audio & Video' category.
 
 Make sure that the entry is ticked. Also tick Logout in the Other 
 category. Doing this does not guarantee that they appear in the menu!
 Sometimes moving them to the top of the list in the menu editor will 
-do the trick. Sometimes a restart will do it. It is flakey! You 
-might also try copying the desktop files into /usr/share/applications.
+do the trick. Sometimes a restart will do it. It is flakey!
 As a final suggestion, try renaming
  
 lxde-pi-applications.menu in /home/pi/.config/menus/ to 
@@ -178,4 +180,4 @@ output port. The Raspberry Pi playback volume cannot be adjusted by
 WolfMixer or alsamixer. Use the panel app. You may find erroneous 'Mute'
  indications in the app, but it does not seem to affect playback.
 
-README.txt, Version4, 11/05/2017
+README.txt, Version4, 15/05/2017

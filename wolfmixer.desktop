@@ -50,4 +50,4 @@ Exec=python /home/pi/Programs/Wolfmixer/wolfmixer.py
 Icon=/usr/share/icons/Adwaita/scalable/devices/WolfMixer.png
 Terminal=false
 Type=Application
-Categories=GTK;Utility
+Categories=GTK;Audio
