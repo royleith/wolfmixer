@@ -180,4 +180,4 @@ output port. The Raspberry Pi playback volume cannot be adjusted by
 WolfMixer or alsamixer. Use the panel app. You may find erroneous 'Mute'
  indications in the app, but it does not seem to affect playback.
 
-README.txt, Version4, 15/05/2017
+README.txt, Version 5, 15/05/2017
