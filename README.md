@@ -1,4 +1,4 @@
-                               WolfMixer V0.8
+                               WolfMixer V0.9
                                  25/12/2022
 Copyright (C) 2015, 2016, 2017, 2022 Roy Leith
 
